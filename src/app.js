@@ -34,6 +34,8 @@ app.post("/sign-up", (req, res) => {
 });
 
 app.post("/tweets", (req,res) => {
+
+    username = req.body.username;
     
     const isRegistered = users.find((user) => user.username === username);
 
@@ -41,18 +43,25 @@ app.post("/tweets", (req,res) => {
         return res.status(401).send("UNAUTHORIZED");
     }
     
-    username = req.body.username;
-    
     const tweet = req.body.tweet;
 
     if(!tweet){
         return res.status(422).send("Preencha o nome do tweet");
     }
     
-    tweets.push({username, tweet});
+    tweets.push({username, avatar, tweet});
 
     res.send("OK");
 
+});
+
+app.get("/tweets",(req, res) => {
+    if(tweets.length <= 10){
+        return res.send(tweets);
+    }
+    const lastTenTweets = tweets.filter((tweet,index,tweets) => (index >= tweets.length-10));
+
+    res.send(lastTenTweets);
 });
 
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
